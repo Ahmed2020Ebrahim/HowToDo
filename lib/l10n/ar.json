@@ -1,0 +1,24 @@
+{
+  "hello": "مرحبا",
+  "welcome": "مرحبًا بك في HowToDo",
+  "welcome_subtitle": "حلولك الشاملة لإدارة المهام",
+  "select_language": "اختر اللغة",
+  "select_language_hint": "يمكنك تغيير اللغة من الإعدادات لاحقًا",
+  "next": "التالي",
+  "let's_go": "لنبدأ",
+  "login": "تسجيل الدخول",
+  "register": "انشاء حساب",
+  "userName": "اسم المستخدم",
+  "email": "البريد الإلكتروني",
+  "password": "كلمة المرور",
+  "confirm_password": "تأكيد كلمة المرور",
+  "agreement": "أوافق على ",
+  "terms":"الشروط ",
+  "and":"و ",
+  "conditions": "الأحكام ",
+  "remember_me": "تذكرني",
+  "forget_password": "نسيت كلمة المرور؟",
+  "create_account": "إنشاء حساب"
+
+
+}

@@ -1,0 +1,25 @@
+{
+  "hello": "Hello",
+  "welcome": "Welcome to HowToDo",
+  "welcome_subtitle": "Your one-stop solution for task management",
+  "select_language": "Select Language",
+  "select_language_hint": "You can change this later from settings",
+  "next": "Next",
+  "let's_go": "Let's Go",
+  "login": "Login",
+  "register": "Register",
+  "userName": "User Name",
+  "email": "Email",
+  "password": "Password",
+  "confirm_password": "Confirm Password",
+  "agreement": "I agree to the ",
+  "terms":"terms ",
+  "and":"and ",
+  "conditions": "conditions ",
+  "remember_me": "Remember Me",
+  "forget_password": "Forget Password?",
+  "create_account": "Create Account"
+  
+
+  
+}
