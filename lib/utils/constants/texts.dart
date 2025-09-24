@@ -12,7 +12,7 @@ class AppTexts {
   static const String done = "Done";
   static const String addTask = "Add Task";
   static const String completed = "Completed";
-  static const String helloMessage = "Hello Ahmed";
+  static const String helloMessage = "Hello ";
   static const String subHelloMessage = "Let's get started keeping your tasks organized";
 }
 

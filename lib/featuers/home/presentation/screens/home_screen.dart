@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:how_to_do/featuers/add_task/presentation/screens/add_task_screen.dart';
 import 'package:how_to_do/utils/constants/colors.dart';
 import 'package:how_to_do/utils/helpers/helper_functions.dart';
 import '../blocs/cubit/tasks_cubit.dart';
 import '../widgets/custom_animated_navbar.dart';
 import '../widgets/custom_appbar.dart';
+import '../widgets/custom_floating_action_button.dart';
 import '../widgets/drag_target_task_card.dart';
 import '../widgets/draggable_color.dart';
 import '../widgets/wellcom_message.dart';
@@ -25,17 +25,10 @@ class HomeScreen extends StatelessWidget {
       //custom bottom navigation bar
       bottomNavigationBar: CustomAnimatedNavBar(),
 
-      floatingActionButton: GestureDetector(
-        onTap: () {
-          // Action when the button is tapped
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) => AddTaskScreen()));
-        },
-        child: CircleAvatar(
-          radius: 30,
-          backgroundColor: Colors.deepOrange,
-          child: const Icon(Icons.add, size: 35, color: Colors.white),
-        ),
-      ),
+      //custom floating action button
+      floatingActionButton: CustomFloatingActionButton(),
+
+      //to center the floating action button
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
 
       //body
@@ -43,7 +36,9 @@ class HomeScreen extends StatelessWidget {
         children: [
           Column(
             children: [
+              //User wellcom Message
               WellcomMessage(),
+
               SizedBox(
                 height: 500.h,
                 child: SingleChildScrollView(

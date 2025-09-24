@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive/hive.dart';
+import 'package:how_to_do/featuers/auth/data/user_model.dart';
 
 import '../../../model/task_model.dart';
 
@@ -10,9 +11,8 @@ part 'tasks_state.dart';
 
 class TasksCubit extends Cubit<TasksState> {
   TasksCubit() : super(TasksInitial());
-  Box<Task> taskBox = Hive.box<Task>('tasks');
+  Box<Task> taskBox = Hive.box<Task>(CurrentUser.user!.uid!);
   void loadTasks() async {
-    taskBox = Hive.box<Task>('tasks');
     emit(TasksLoading());
     try {
       final tasks = taskBox.values.toList();

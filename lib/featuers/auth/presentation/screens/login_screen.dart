@@ -7,7 +7,6 @@ import 'package:how_to_do/featuers/home/presentation/screens/home_screen.dart';
 import 'package:how_to_do/l10n/extension.dart';
 import 'package:how_to_do/utils/helpers/helper_functions.dart';
 import '../../../../common/widgets/buttons/social_icon_button.dart';
-import '../blocs/login_button/bloc/login_button_bloc.dart';
 import '../../../../utils/constants/path.dart';
 import '../../../../utils/validators/app_validators.dart';
 import '../blocs/auth/bloc/auth_bloc.dart';
@@ -21,11 +20,32 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   bool isVisable = false;
+  bool rememberMe = false;
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  String get email => emailController.text.trim();
+  String get password => passwordController.text.trim();
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+
+  //validate and submit
+  void validateAndSubmit() {
+    if (formKey.currentState!.validate()) {
+      // If the form is valid, proceed with login
+      BlocProvider.of<AuthBloc>(context).add(Login(email: email, password: password));
+    }
+  }
 
   //toggle password visablety
   void togglePassword() {
     setState(() {
       isVisable = !isVisable;
+    });
+  }
+
+  //toggle remember me
+  void toggleRememberMe(bool? value) {
+    setState(() {
+      rememberMe = value ?? false;
     });
   }
 
@@ -54,13 +74,13 @@ class _LoginScreenState extends State<LoginScreen> {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 30),
               child: Form(
-                // key: loginController.formKey,
+                key: formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     TextFormField(
-                      // controller: loginController.emailController,
+                      controller: emailController,
                       validator: (value) => AppValidators.validateEmail(value),
                       cursorColor: Colors.deepOrange,
                       keyboardType: TextInputType.emailAddress,
@@ -80,7 +100,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                     SizedBox(height: 30),
                     TextFormField(
-                      // controller: loginController.passwordController,
+                      controller: passwordController,
                       validator: (value) => AppValidators.validatePassword(value),
                       cursorColor: Colors.deepOrange,
                       keyboardType: TextInputType.visiblePassword,
@@ -115,8 +135,10 @@ class _LoginScreenState extends State<LoginScreen> {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Checkbox(
-                          value: false,
-                          onChanged: (value) {},
+                          value: rememberMe,
+                          onChanged: (value) {
+                            toggleRememberMe(value);
+                          },
                           activeColor: Colors.deepOrange,
                         ),
                         Text(
@@ -138,51 +160,52 @@ class _LoginScreenState extends State<LoginScreen> {
                     SizedBox(
                       width: MediaQuery.of(context).size.width - 80,
                       height: 50.h,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          // if (loginController.formKey.currentState!.validate()) {
-                          //   await loginController.login();
-                          // }
-                          BlocProvider.of<LoginButtonBloc>(context).add(LoginButtonPressedEvent());
-                          await Future.delayed(Duration(seconds: 2));
-
-                          // Handle login logic here
-                          BlocProvider.of<AuthBloc>(context).add(LoggedIn());
-
-                          //navigate to home screen
-                          Navigator.of(context).pushAndRemoveUntil(
-                            MaterialPageRoute(builder: (context) => HomeScreen()),
-                            (route) => false,
-                          );
-                        },
-
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          shadowColor: Colors.transparent,
-                          backgroundColor: Colors.deepOrange,
-                          padding: EdgeInsets.symmetric(vertical: 15),
-                          textStyle: TextStyle(fontSize: 18),
-                        ),
-                        child: BlocBuilder<LoginButtonBloc, LoginButtonState>(
-                          builder: (context, state) {
-                            if (state is LoginButtonLoading) {
-                              return Center(
-                                child: SizedBox(
-                                  width: 30.w,
-                                  height: 30.w,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-                                    strokeWidth: 2,
+                      child: BlocListener<AuthBloc, AuthState>(
+                        listener: (context, state) {
+                          if (state is AuthLoading) {
+                            // Show loading indicator
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              barrierColor: Colors.black.withValues(alpha: 0.3),
+                              builder:
+                                  (context) => Center(
+                                    child: CircularProgressIndicator(color: Colors.deepOrange),
                                   ),
-                                ),
-                              );
-                            } else {
-                              return Text(
-                                "login".tr(context),
-                                style: TextStyle(color: Colors.white),
-                              );
-                            }
+                            );
+                          } else {
+                            // Hide loading indicator
+                            Navigator.of(context, rootNavigator: true).pop();
+                          }
+
+                          if (state is Authenticated) {
+                            // Navigate to home screen
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(builder: (context) => HomeScreen()),
+                              (route) => false,
+                            );
+                          }
+
+                          if (state is AuthError) {
+                            // Show error message
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+                            );
+                          }
+                        },
+                        child: ElevatedButton(
+                          onPressed: () {
+                            validateAndSubmit();
                           },
+
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            shadowColor: Colors.transparent,
+                            backgroundColor: Colors.deepOrange,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            textStyle: TextStyle(fontSize: 18),
+                          ),
+                          child: Text("login".tr(context), style: TextStyle(color: Colors.white)),
                         ),
                       ),
                     ),

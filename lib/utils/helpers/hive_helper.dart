@@ -1,5 +1,8 @@
 import 'package:hive_flutter/hive_flutter.dart';
 
+import '../../featuers/home/model/task_model.dart';
+import '../../featuers/home/model/task_priority.dart';
+
 class HiveHelper {
   //private constructor
   HiveHelper._privateConstructor();
@@ -16,6 +19,10 @@ class HiveHelper {
     await Hive.initFlutter(); // بديل path_provider
 
     _isInitialized = true;
+
+    //register adapters here if needed
+    Hive.registerAdapter(PriorityAdapter());
+    Hive.registerAdapter(TaskAdapter());
   }
 
   ///open a box
@@ -24,6 +31,11 @@ class HiveHelper {
       throw Exception("Hive is not initialized. Call init() first.");
     }
     return await Hive.openBox(boxName);
+  }
+
+  ///check if box is open
+  bool isBoxOpen(String boxName) {
+    return Hive.isBoxOpen(boxName);
   }
 
   ///put value with custom key

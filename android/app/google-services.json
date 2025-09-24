@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "663170588807",
+    "firebase_url": "https://howtodo-1ce0f-default-rtdb.firebaseio.com",
+    "project_id": "howtodo-1ce0f",
+    "storage_bucket": "howtodo-1ce0f.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:663170588807:android:86bc9ddf15a2354aa6d822",
+        "android_client_info": {
+          "package_name": "com.example.how_to_do"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAY09pEwBoTcqK3iJa3oK-MdXqEVLjIcvM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

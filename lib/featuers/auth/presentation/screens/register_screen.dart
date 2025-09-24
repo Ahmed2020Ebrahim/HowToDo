@@ -1,20 +1,81 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:how_to_do/featuers/auth/data/user_model.dart';
 import 'package:how_to_do/l10n/extension.dart';
 import 'package:how_to_do/utils/constants/colors.dart';
 
 import '../../../../common/clipper/auth_header_clipper.dart';
 import '../../../../common/widgets/buttons/social_icon_button.dart';
 import '../../../../utils/helpers/helper_functions.dart';
-import '../blocs/login_button/bloc/login_button_bloc.dart';
 import '../../../../utils/constants/path.dart';
 import '../../../../utils/validators/app_validators.dart';
+import '../../../home/presentation/screens/home_screen.dart';
 import '../blocs/auth/bloc/auth_bloc.dart';
 import 'login_screen.dart';
 
-class RegisterScreen extends StatelessWidget {
+class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
+
+  @override
+  State<RegisterScreen> createState() => _RegisterScreenState();
+}
+
+class _RegisterScreenState extends State<RegisterScreen> {
+  final GlobalKey<FormState> formKey = GlobalKey<FormState>();
+  bool isVisible = false;
+  bool isConfirmVisible = false;
+  bool agreedToTerms = false;
+  TextEditingController userNameController = TextEditingController();
+  TextEditingController emailController = TextEditingController();
+  TextEditingController passwordController = TextEditingController();
+  TextEditingController confirmPasswordController = TextEditingController();
+  String get userName => userNameController.text.trim();
+  String get email => emailController.text.trim();
+  String get password => passwordController.text;
+  String get confirmPassword => confirmPasswordController.text;
+
+  //toggle password visablety
+  void togglePassword() {
+    setState(() {
+      isVisible = !isVisible;
+    });
+  }
+
+  //toggle confirm password visablety
+  void toggleConfirmPassword() {
+    setState(() {
+      isConfirmVisible = !isConfirmVisible;
+    });
+  }
+
+  //toggle terms and conditions
+  void toggleAgreedToTerms(bool? value) {
+    setState(() {
+      agreedToTerms = value ?? false;
+    });
+  }
+
+  //validate register
+  void validatAndSubmit() {
+    if (!agreedToTerms) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("please_agree_to_terms".tr(context)), backgroundColor: Colors.red),
+      );
+      return;
+    }
+    if (password != confirmPassword) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("passwords_do_not_match".tr(context)), backgroundColor: Colors.red),
+      );
+      return;
+    }
+    if (formKey.currentState!.validate()) {
+      BlocProvider.of<AuthBloc>(
+        context,
+      ).add(Register(user: UserModel(email: email, name: userName), password: password));
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -41,14 +102,14 @@ class RegisterScreen extends StatelessWidget {
             Padding(
               padding: EdgeInsets.symmetric(horizontal: 30),
               child: Form(
-                // key: loginController.formKey,
+                key: formKey,
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     //user name
                     TextFormField(
-                      // controller: loginController.emailController,
+                      controller: userNameController,
                       validator: (value) => AppValidators.validateName(value),
                       cursorColor: Colors.deepOrange,
                       keyboardType: TextInputType.name,
@@ -68,7 +129,7 @@ class RegisterScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 15.h),
                     TextFormField(
-                      // controller: loginController.emailController,
+                      controller: emailController,
                       validator: (value) => AppValidators.validateEmail(value),
                       cursorColor: Colors.deepOrange,
                       keyboardType: TextInputType.emailAddress,
@@ -88,16 +149,21 @@ class RegisterScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 15.h),
                     TextFormField(
-                      // controller: loginController.passwordController,
+                      controller: passwordController,
                       validator: (value) => AppValidators.validatePassword(value),
                       cursorColor: Colors.deepOrange,
                       keyboardType: TextInputType.visiblePassword,
-                      obscureText: true,
+                      obscureText: !isVisible,
                       decoration: InputDecoration(
                         hintText: "password".tr(context),
                         suffixIcon: IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.visibility_off, color: Colors.deepOrange),
+                          onPressed: () {
+                            togglePassword();
+                          },
+                          icon: Icon(
+                            isVisible ? Icons.visibility : Icons.visibility_off,
+                            color: Colors.deepOrange,
+                          ),
                         ),
 
                         border: UnderlineInputBorder(
@@ -114,16 +180,21 @@ class RegisterScreen extends StatelessWidget {
                     ),
                     SizedBox(height: 15.h),
                     TextFormField(
-                      // controller: loginController.passwordController,
+                      controller: confirmPasswordController,
                       validator: (value) => AppValidators.validatePassword(value),
                       cursorColor: Colors.deepOrange,
                       keyboardType: TextInputType.visiblePassword,
-                      obscureText: true,
+                      obscureText: !isConfirmVisible,
                       decoration: InputDecoration(
                         hintText: "confirm_password".tr(context),
                         suffixIcon: IconButton(
-                          onPressed: () {},
-                          icon: Icon(Icons.visibility_off, color: Colors.deepOrange),
+                          onPressed: () {
+                            toggleConfirmPassword();
+                          },
+                          icon: Icon(
+                            isConfirmVisible ? Icons.visibility : Icons.visibility_off,
+                            color: Colors.deepOrange,
+                          ),
                         ),
 
                         border: UnderlineInputBorder(
@@ -145,8 +216,10 @@ class RegisterScreen extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
                         Checkbox(
-                          value: false,
-                          onChanged: (value) {},
+                          value: agreedToTerms,
+                          onChanged: (value) {
+                            toggleAgreedToTerms(value);
+                          },
                           activeColor: Colors.deepOrange,
                         ),
                         Text.rich(
@@ -177,46 +250,54 @@ class RegisterScreen extends StatelessWidget {
                     SizedBox(
                       width: MediaQuery.of(context).size.width - 80,
                       height: 50.h,
-                      child: ElevatedButton(
-                        onPressed: () async {
-                          // if (loginController.formKey.currentState!.validate()) {
-                          //   await loginController.login();
-                          // }
-                          BlocProvider.of<LoginButtonBloc>(context).add(LoginButtonPressedEvent());
-                          await Future.delayed(Duration(seconds: 2));
-
-                          // Handle login logic here
-                          BlocProvider.of<AuthBloc>(context).add(LoggedIn());
-                        },
-
-                        style: ElevatedButton.styleFrom(
-                          elevation: 0,
-                          shadowColor: Colors.transparent,
-                          backgroundColor: Colors.deepOrange,
-                          padding: EdgeInsets.symmetric(vertical: 15),
-                          textStyle: TextStyle(fontSize: 18),
-                        ),
-                        child: BlocBuilder<LoginButtonBloc, LoginButtonState>(
-                          builder: (context, state) {
-                            if (state is LoginButtonLoading) {
-                              return Center(
-                                child: SizedBox(
-                                  width: 30.w,
-                                  height: 30.w,
-                                  child: CircularProgressIndicator(
-                                    color: Colors.white,
-
-                                    strokeWidth: 2,
+                      child: BlocListener<AuthBloc, AuthState>(
+                        listener: (context, state) {
+                          if (state is AuthLoading) {
+                            // Show loading indicator
+                            showDialog(
+                              context: context,
+                              barrierDismissible: false,
+                              barrierColor: Colors.black.withValues(alpha: 0.3),
+                              builder:
+                                  (context) => Center(
+                                    child: CircularProgressIndicator(color: Colors.deepOrange),
                                   ),
-                                ),
-                              );
-                            } else {
-                              return Text(
-                                "register".tr(context),
-                                style: TextStyle(color: Colors.white),
-                              );
-                            }
+                            );
+                          } else {
+                            // Hide loading indicator
+                            Navigator.of(context, rootNavigator: true).pop();
+                          }
+
+                          if (state is AuthError) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(content: Text(state.message), backgroundColor: Colors.red),
+                            );
+                          }
+
+                          if (state is Authenticated) {
+                            // Navigate to home screen or wherever
+                            Navigator.of(context).pushAndRemoveUntil(
+                              MaterialPageRoute(builder: (context) => HomeScreen()),
+                              (route) => false,
+                            );
+                          }
+                        },
+                        child: ElevatedButton(
+                          onPressed: () {
+                            validatAndSubmit();
                           },
+
+                          style: ElevatedButton.styleFrom(
+                            elevation: 0,
+                            shadowColor: Colors.transparent,
+                            backgroundColor: Colors.deepOrange,
+                            padding: EdgeInsets.symmetric(vertical: 15),
+                            textStyle: TextStyle(fontSize: 18),
+                          ),
+                          child: Text(
+                            "register".tr(context),
+                            style: TextStyle(color: Colors.white),
+                          ),
                         ),
                       ),
                     ),

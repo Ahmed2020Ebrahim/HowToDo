@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:how_to_do/featuers/auth/presentation/screens/auth_selection_screen.dart';
 import 'package:how_to_do/l10n/extension.dart';
 
 import '../../../../utils/constants/colors.dart';
@@ -60,12 +59,12 @@ class SelectLanguageScreen extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   //the app is no longer in the first start
-                  context.read<AuthBloc>().add(FirstRunCompleted());
+                  context.read<AuthBloc>().add(SetupLocalization());
 
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const AuthSelectionScreen()),
-                  );
+                  // Navigator.pushReplacement(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => const AuthSelectionScreen()),
+                  // );
                 },
                 style: ElevatedButton.styleFrom(
                   elevation: 0,

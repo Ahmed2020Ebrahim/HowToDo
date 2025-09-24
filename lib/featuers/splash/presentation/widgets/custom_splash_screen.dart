@@ -63,22 +63,7 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> with TickerProv
           if (status == AnimationStatus.completed) {
             Future.delayed(Duration(seconds: 1), () {
               Navigator.of(context).pushAndRemoveUntil(
-                MaterialPageRoute(
-                  builder:
-                      (context) => BlocBuilder<AuthBloc, AuthState>(
-                        builder: (context, state) {
-                          if (state is AuthFirstRun) {
-                            return SelectLanguageScreen();
-                          } else if (state is AuthInitial) {
-                            return Scaffold(body: Center(child: CircularProgressIndicator()));
-                          } else if (state is Authenticated) {
-                            return HomeScreen();
-                          } else {
-                            return AuthSelectionScreen();
-                          }
-                        },
-                      ),
-                ),
+                MaterialPageRoute(builder: (context) => AuthContollerScreen()),
                 (route) => false,
               );
             });
@@ -133,6 +118,27 @@ class _CustomSplashScreenState extends State<CustomSplashScreen> with TickerProv
           ],
         ),
       ),
+    );
+  }
+}
+
+class AuthContollerScreen extends StatelessWidget {
+  const AuthContollerScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<AuthBloc, AuthState>(
+      builder: (context, state) {
+        if (state is AuthInitial) {
+          return Scaffold(body: Center(child: CircularProgressIndicator()));
+        } else if (state is AuthSetupLocalization) {
+          return SelectLanguageScreen();
+        } else if (state is Authenticated) {
+          return HomeScreen();
+        } else {
+          return AuthSelectionScreen();
+        }
+      },
     );
   }
 }

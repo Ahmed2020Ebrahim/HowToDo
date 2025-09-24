@@ -80,7 +80,6 @@ class HelperFunctions {
       // Combine into single DateTime
       return DateTime(date.year, date.month, date.day, time.hour, time.minute);
     } catch (e) {
-      print("Error parsing date or time: $e");
       return null; // return null if parsing fails
     }
   }
