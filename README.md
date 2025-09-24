@@ -1,7 +1,7 @@
 # HowToDo
 
 HowToDo is a clean and minimal task management app built with Flutter.
-It helps you organize daily tasks, track progress, and stay productive—whether it’s for work, study, or personal projects.
+It helps you organize daily tasks, track progress, and stay productive whether it’s for work, study, or personal projects.
 
 ---
 
