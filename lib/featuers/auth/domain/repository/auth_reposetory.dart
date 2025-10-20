@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:how_to_do/featuers/auth/data/user_model.dart';
 import 'package:how_to_do/featuers/auth/domain/services/auth_services/firebase_auth_services.dart';
 import 'package:how_to_do/featuers/auth/domain/services/auth_services/firestore_auth_services.dart';
@@ -9,12 +7,11 @@ class AuthRepository {
   //register
   static Future<UserModel> register(UserModel user, String password) async {
     try {
+      //register user
       UserModel result = await FirebaseAuthServices.registerWithEmailAndPassword(
         user.email,
         password,
       );
-      log('from auth_reposetory/register()-> User registered uid: ${result.uid}');
-
       //set current user
       CurrentUser.user = UserModel(uid: result.uid, email: user.email, name: user.name);
       //save user to firestore

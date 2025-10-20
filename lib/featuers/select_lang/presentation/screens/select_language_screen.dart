@@ -1,9 +1,13 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:how_to_do/l10n/extension.dart';
+import 'package:how_to_do/utils/helpers/shared_pref_helper.dart';
 
 import '../../../../utils/constants/colors.dart';
+import '../../../../utils/constants/shared_constants.dart';
 import '../../../../utils/constants/sizes.dart';
 import '../../../auth/presentation/blocs/auth/bloc/auth_bloc.dart';
 import '../widgets/select_language_button.dart';
@@ -50,6 +54,15 @@ class SelectLanguageScreen extends StatelessWidget {
                   LanguageSelectorButton(localCode: "ar", lable: "العربية"),
                 ],
               ),
+            ),
+
+            ElevatedButton(
+              onPressed: () async {
+                var prefs = SharedPrefHelper.instance;
+                String? data = prefs.getString(SharedConstants.FCMKey);
+                log(data.toString(), name: "getstring Encrypt");
+              },
+              child: Text("Print FCM"),
             ),
 
             SizedBox(

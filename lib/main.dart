@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:how_to_do/app.dart';
 import 'package:how_to_do/featuers/auth/data/user_model.dart';
+import 'featuers/auth/domain/services/notification_services/firebase_notification_services.dart';
 import 'firebase_options.dart';
 import 'utils/helpers/hive_helper.dart';
 import 'utils/helpers/shared_pref_helper.dart';
@@ -16,6 +17,9 @@ void main() async {
 
   //Todo : Initialize shared preferences
   await SharedPrefHelper.instance.init();
+
+  //Todo : Initialize Firebase Cloud Messaging
+  FirebaseNotificationService().setUp();
 
   //Todo : Initialize Hive & register adapters
   await HiveHelper.instance.init();
